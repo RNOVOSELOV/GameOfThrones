@@ -5,5 +5,8 @@ package xyz.rnovoselov.projects.gameofthrones.utils;
  */
 
 public interface AppConfig {
-    String BASE_URL = "https://anapioficeandfire.com/";
+    String BASE_URL = "https://anapioficeandfire.com/api/";
+    int LANNISTER_HOUSE_ID = 229;
+    int STARK_HOUSE_ID = 362;
+    int TARGARYEN_HOUSE_ID = 378;
 }
