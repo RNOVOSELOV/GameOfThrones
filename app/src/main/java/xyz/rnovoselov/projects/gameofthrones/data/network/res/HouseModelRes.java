@@ -65,8 +65,16 @@ public class HouseModelRes {
         return name;
     }
 
-    public void setHouseName(String name) {
-        this.name = name;
+    public String getWords() {
+        return words;
+    }
+
+    public List<String> getTitles() {
+        return titles;
+    }
+
+    public List<String> getPersonsUrls() {
+        return swornMembers;
     }
 
     @Override

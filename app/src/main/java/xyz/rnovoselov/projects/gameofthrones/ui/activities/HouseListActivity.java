@@ -84,7 +84,7 @@ public class HouseListActivity extends BaseActivity {
         int px = getResources().getDimensionPixelSize(R.dimen.custom_tab_icon_size);
         Picasso.with(this)
                 .load(tabIcons[tabAtId])
-                .resize(px, px)
+                .fit()
                 .centerCrop()
                 .into(iv);
         tv.setText(tabText[tabAtId]);
