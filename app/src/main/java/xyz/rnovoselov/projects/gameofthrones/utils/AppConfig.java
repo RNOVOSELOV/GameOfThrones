@@ -9,4 +9,5 @@ public interface AppConfig {
     int LANNISTER_HOUSE_ID = 229;
     int STARK_HOUSE_ID = 362;
     int TARGARYEN_HOUSE_ID = 378;
+
 }

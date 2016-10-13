@@ -13,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.activities.SplashScreenActivity">
+
+        </activity>
+
+        <activity android:name=".ui.activities.HouseListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
