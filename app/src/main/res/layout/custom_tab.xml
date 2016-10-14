@@ -19,7 +19,7 @@
         android:fontFamily="sans-serif-medium"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/white"
-        android:textSize="@dimen/font_increased_16"
+        android:textSize="@dimen/font_normal_14"
         tools:text="FIRST">
 
     </TextView>

@@ -5,14 +5,14 @@
             android:id="@+id/drawer_menu_lannisters_item"
             android:checkable="true"
             android:icon="@drawable/lanister_icon"
-            android:title="@string/lannister_home_title" />
+            android:title="House Lannister of Casterly Rock" />
         <item
             android:id="@+id/drawer_menu_starks_item"
             android:icon="@drawable/stark_icon"
-            android:title="@string/stark_home_title" />
+            android:title="House Stark of Winterfell" />
         <item
             android:id="@+id/drawer_menu_targariens_item"
             android:icon="@drawable/targarien_icon"
-            android:title="@string/targariens_home_title" />
+            android:title="House Targaryen of King's Landing" />
     </group>
 </menu>

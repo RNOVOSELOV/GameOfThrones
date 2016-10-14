@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Game of Thrones</string>
-    <string name="lannister_home_title">LANNISTERS</string>
-    <string name="stark_home_title">STARKS</string>
-    <string name="targariens_home_title">TARGARYENS</string>
+    <string name="lannister_home_title">LANNISTER</string>
+    <string name="stark_home_title">STARK</string>
+    <string name="targariens_home_title">TARGARYEN</string>
 
 </resources>
