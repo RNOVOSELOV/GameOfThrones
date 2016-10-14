@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/tab_icon"
-        android:layout_width="@dimen/custom_tab_icon_size"
-        android:layout_height="@dimen/custom_tab_icon_size"
+        android:layout_width="@dimen/size_custom_tab_icon"
+        android:layout_height="@dimen/size_custom_tab_icon"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"/>
 

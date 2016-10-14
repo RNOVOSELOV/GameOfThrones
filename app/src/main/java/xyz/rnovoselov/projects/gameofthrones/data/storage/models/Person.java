@@ -1,13 +1,15 @@
 package xyz.rnovoselov.projects.gameofthrones.data.storage.models;
 
-import android.util.Log;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
+import java.util.List;
 
 import xyz.rnovoselov.projects.gameofthrones.data.network.res.PersonModelRes;
 
@@ -34,18 +36,15 @@ public class Person {
         this.mother = model.getMother();
     }
 
-    @Generated(hash = 471968301)
-    public Person(Long id, @NotNull Long personHouseRemoteId, @NotNull Long personRemoteId,
-                  @NotNull String name, Boolean sex, String born, String titles, String aliases,
-                  Long father, Long mother) {
+    @Generated(hash = 1047763414)
+    public Person(Long id, @NotNull Long personRemoteId, @NotNull Long personHouseRemoteId,
+            @NotNull String name, Boolean sex, String born, Long father, Long mother) {
         this.id = id;
-        this.personHouseRemoteId = personHouseRemoteId;
         this.personRemoteId = personRemoteId;
+        this.personHouseRemoteId = personHouseRemoteId;
         this.name = name;
         this.sex = sex;
         this.born = born;
-        this.titles = titles;
-        this.aliases = aliases;
         this.father = father;
         this.mother = mother;
     }
@@ -58,11 +57,11 @@ public class Person {
     private Long id;
 
     @NotNull
-    private Long personHouseRemoteId;
-
-    @NotNull
     @Unique
     private Long personRemoteId;
+
+    @NotNull
+    private Long personHouseRemoteId;
 
     @NotNull
     private String name;
@@ -71,23 +70,20 @@ public class Person {
 
     private String born;
 
-    private String titles;
-
-    private String aliases;
-
     private Long father;
 
     private Long mother;
 
-    /**
-     * Used to resolve relations
-     */
+    @ToMany(joinProperties = {
+            @JoinProperty(name = "personRemoteId", referencedName = "titlePersonRemoteId")
+    })
+    private List<Titles> characteristics;
+
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 778611619)
     private transient PersonDao myDao;
 
@@ -105,14 +101,6 @@ public class Person {
 
     public String getBorn() {
         return this.born;
-    }
-
-    public String getTitles() {
-        return this.titles;
-    }
-
-    public String getAliases() {
-        return this.aliases;
     }
 
     public Long getFather() {
@@ -147,12 +135,49 @@ public class Person {
         this.born = born;
     }
 
-    public void setTitles(String titles) {
-        this.titles = titles;
+    public Long getPersonRemoteId() {
+        return this.personRemoteId;
     }
 
-    public void setAliases(String aliases) {
-        this.aliases = aliases;
+    public void setPersonRemoteId(Long personRemoteId) {
+        this.personRemoteId = personRemoteId;
+    }
+
+    public void setFather(Long father) {
+        this.father = father;
+    }
+
+    public void setMother(Long mother) {
+        this.mother = mother;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1362716280)
+    public List<Titles> getCharacteristics() {
+        if (characteristics == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TitlesDao targetDao = daoSession.getTitlesDao();
+            List<Titles> characteristicsNew = targetDao
+                    ._queryPerson_Characteristics(personRemoteId);
+            synchronized (this) {
+                if (characteristics == null) {
+                    characteristics = characteristicsNew;
+                }
+            }
+        }
+        return characteristics;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 146028633)
+    public synchronized void resetCharacteristics() {
+        characteristics = null;
     }
 
     /**
@@ -191,28 +216,10 @@ public class Person {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2056799268)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getPersonDao() : null;
-    }
-
-    public Long getPersonRemoteId() {
-        return this.personRemoteId;
-    }
-
-    public void setPersonRemoteId(Long personRemoteId) {
-        this.personRemoteId = personRemoteId;
-    }
-
-    public void setFather(Long father) {
-        this.father = father;
-    }
-
-    public void setMother(Long mother) {
-        this.mother = mother;
     }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="letter_colors">
+        <item>@color/orange</item>
+        <item>@color/pink</item>
+        <item>@color/cyan</item>
+        <item>@color/lime</item>
+        <item>@color/gray</item>
+        <item>@color/deep_orange</item>
+        <item>@color/teal</item>
+        <item>@color/amber</item>
+        <item>@color/indigo</item>
+        <item>@color/purple</item>
+        <item>@color/brown</item>
+        <item>@color/light_green</item>
+    </array>
+</resources>

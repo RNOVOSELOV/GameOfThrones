@@ -81,7 +81,7 @@ public class HouseListActivity extends BaseActivity {
         View view = LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
         TextView tv = ((TextView) view.findViewById(R.id.tab));
         ImageView iv = ((ImageView) view.findViewById(R.id.tab_icon));
-        int px = getResources().getDimensionPixelSize(R.dimen.custom_tab_icon_size);
+        int px = getResources().getDimensionPixelSize(R.dimen.size_custom_tab_icon);
         Picasso.with(this)
                 .load(tabIcons[tabAtId])
                 .fit()
@@ -89,7 +89,6 @@ public class HouseListActivity extends BaseActivity {
                 .into(iv);
         tv.setText(tabText[tabAtId]);
         mTabLayout.getTabAt(tabAtId).setCustomView(view);
-
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

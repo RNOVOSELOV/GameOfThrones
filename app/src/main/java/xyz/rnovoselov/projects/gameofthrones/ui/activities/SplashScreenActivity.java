@@ -1,9 +1,14 @@
 package xyz.rnovoselov.projects.gameofthrones.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +37,26 @@ public class SplashScreenActivity extends BaseActivity {
     private static final String TAG = ConstantManager.TAG_PREFIX + SplashScreenActivity.class.getSimpleName();
     @BindView(R.id.splash_coordinator)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.splash_image_view)
+    ImageView mImageView;
 
     private DataManager mDataManager;
     private HouseDao mHouseDao;
     private TitlesDao mTitlesDao;
     private PersonDao mPersonDao;
-    List<Person> persons = new ArrayList<>();
-    List<House> houses = new ArrayList<>();
-
+    private volatile List<Person> persons = new ArrayList<>();
+    private volatile List<House> houses = new ArrayList<>();
+    private volatile List<Titles> titles = new ArrayList<>();
+    private volatile int sessionsStarted;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mDataManager = DataManager.getInstance();
         ButterKnife.bind(this);
+        sessionsStarted = 0;
+
 
         mHouseDao = mDataManager.getDaoSession().getHouseDao();
         mTitlesDao = mDataManager.getDaoSession().getTitlesDao();
@@ -58,23 +67,17 @@ public class SplashScreenActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         showProgress();
-   //     processHouse(AppConfig.STARK_HOUSE_ID);
-    //    processHouse(AppConfig.LANNISTER_HOUSE_ID);
+        processHouse(AppConfig.STARK_HOUSE_ID);
+        processHouse(AppConfig.LANNISTER_HOUSE_ID);
         processHouse(AppConfig.TARGARYEN_HOUSE_ID);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideProgress();
-                mHouseDao.insertOrReplaceInTx(houses);
-                mPersonDao.insertOrReplaceInTx(persons);
-            }
-        }, 5000);
+        Picasso.with(this)
+                .load(R.drawable.splash)
+                .into(mImageView);
     }
 
     @Override
@@ -90,6 +93,7 @@ public class SplashScreenActivity extends BaseActivity {
         if (NetworkStatusChecker.isNetworkAvailable(this)) {
 
             Call<HouseModelRes> call = mDataManager.getHouse(String.valueOf(id));
+            sessionsStarted++;
             call.enqueue(new Callback<HouseModelRes>() {
                 @Override
                 public void onResponse(Call<HouseModelRes> call, Response<HouseModelRes> response) {
@@ -104,50 +108,63 @@ public class SplashScreenActivity extends BaseActivity {
                     } else {
                         showSnackbar("Ошибка получения информации о доме " + String.valueOf(id));
                     }
+                    launchMainActivity();
                 }
 
                 @Override
                 public void onFailure(Call<HouseModelRes> call, Throwable t) {
+                    launchMainActivity();
                     // TODO обработать ошибки
                 }
             });
         }
     }
 
-    private List<Titles> getTitlesFromHouseResponse(int id, HouseModelRes model) {
-        List<Titles> titles = new ArrayList<>();
-        for (String title : model.getTitles()) {
-            titles.add(new Titles((long) id, title));
-        }
-        return titles;
-    }
-
     private void processPersonUrl(final int houseId, String url) {
         String [] parts = url.split("/");
         final String personId = parts[parts.length - 1];
         Call<PersonModelRes> call = mDataManager.getPerson(personId);
+        sessionsStarted++;
         call.enqueue(new Callback<PersonModelRes>() {
             @Override
             public void onResponse(Call<PersonModelRes> call, Response<PersonModelRes> response) {
                 if (response.code() == 200) {
-                    showSnackbar(response.body().toString());
                     persons.add(new Person((long) houseId, Long.valueOf(personId), response.body()));
+                    for (String title : response.body().getTitles()) {
+                        titles.add(new Titles(Long.valueOf(personId), true, title));
+                    }
+                    for (String alias : response.body().getAliases()) {
+                        titles.add(new Titles(Long.valueOf(personId), false, alias));
+                    }
                 } else if (response.code() == 404) {
                     showSnackbar("Персонаж не обнаружен");
                 } else {
                     showSnackbar("Ошибка получения информации о персонаже ");
                 }
+                launchMainActivity();
             }
 
             @Override
             public void onFailure(Call<PersonModelRes> call, Throwable t) {
                 showSnackbar("Ошибка получения информации о персонаже ");
+                launchMainActivity();
             }
         });
     }
 
-    private void savePersonsInDb(int house, HouseModelRes response) {
+    void launchMainActivity () {
+        sessionsStarted--;
+        if (sessionsStarted != 0){
+            return;
+        }
 
+        mHouseDao.insertOrReplaceInTx(houses);
+        mPersonDao.insertOrReplaceInTx(persons);
+        mTitlesDao.insertOrReplaceInTx(titles);
+        hideProgress();
+
+        Intent intent = new Intent(this, HouseListActivity.class);
+        startActivity(intent);
+        ActivityCompat.finishAfterTransition(this);
     }
-
 }

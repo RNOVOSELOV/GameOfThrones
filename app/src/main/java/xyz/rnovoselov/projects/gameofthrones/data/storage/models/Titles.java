@@ -11,47 +11,48 @@ import org.greenrobot.greendao.DaoException;
  * Created by roman on 13.10.16.
  */
 
-@Entity(active = true, nameInDb = "TITLES")
+@Entity(active = true, nameInDb = "PERSON_TITLES_ALIASES")
 public class Titles {
 
-    public Titles(Long remoteHomeId, String houseTitle) {
-        this.houseRemoteId = remoteHomeId;
-        this.houseTitle = houseTitle;
+    public Titles(Long remotePersonId, boolean isTitle, String text) {
+        this.titlePersonRemoteId = remotePersonId;
+        this.isTitle = isTitle;
+        this.characteristic = text;
+    }
+
+    @Generated(hash = 718602066)
+    public Titles(Long id, @NotNull Long titlePersonRemoteId,
+            @NotNull Boolean isTitle, @NotNull String characteristic) {
+        this.id = id;
+        this.titlePersonRemoteId = titlePersonRemoteId;
+        this.isTitle = isTitle;
+        this.characteristic = characteristic;
+    }
+
+    @Generated(hash = 2082159104)
+    public Titles() {
     }
 
     @Id
     private Long id;
 
     @NotNull
-    private Long houseRemoteId;
+    private Long titlePersonRemoteId;
+
+    @NotNull
+    private Boolean isTitle;
 
     @NotNull
     @Unique
-    private String houseTitle;
+    private String characteristic;
 
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 658445912)
     private transient TitlesDao myDao;
-
-    @Generated(hash = 434833637)
-    public Titles(Long id, @NotNull Long houseRemoteId,
-                  @NotNull String houseTitle) {
-        this.id = id;
-        this.houseRemoteId = houseRemoteId;
-        this.houseTitle = houseTitle;
-    }
-
-    @Generated(hash = 2082159104)
-    public Titles() {
-    }
 
     public Long getId() {
         return this.id;
@@ -61,20 +62,36 @@ public class Titles {
         this.id = id;
     }
 
-    public Long getHouseRemoteId() {
-        return this.houseRemoteId;
+    public Long getPersonRemoteId() {
+        return this.titlePersonRemoteId;
     }
 
-    public void setHouseRemoteId(Long houseRemoteId) {
-        this.houseRemoteId = houseRemoteId;
+    public void setPersonRemoteId(Long personRemoteId) {
+        this.titlePersonRemoteId = personRemoteId;
     }
 
-    public String getHouseTitle() {
-        return this.houseTitle;
+    public Long getTitlePersonRemoteId() {
+        return this.titlePersonRemoteId;
     }
 
-    public void setHouseTitle(String houseTitle) {
-        this.houseTitle = houseTitle;
+    public void setTitlePersonRemoteId(Long titlePersonRemoteId) {
+        this.titlePersonRemoteId = titlePersonRemoteId;
+    }
+
+    public Boolean getIsTitle() {
+        return this.isTitle;
+    }
+
+    public void setIsTitle(Boolean isTitle) {
+        this.isTitle = isTitle;
+    }
+
+    public String getCharacteristic() {
+        return this.characteristic;
+    }
+
+    public void setCharacteristic(String characteristic) {
+        this.characteristic = characteristic;
     }
 
     /**
@@ -113,12 +130,11 @@ public class Titles {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1913718169)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTitlesDao() : null;
     }
+
 }

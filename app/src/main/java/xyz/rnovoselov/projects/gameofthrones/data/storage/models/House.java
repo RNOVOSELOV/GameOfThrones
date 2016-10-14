@@ -39,13 +39,7 @@ public class House {
     private String name;
 
     private String words;
-
-
-    @ToMany(joinProperties = {
-            @JoinProperty(name = "remoteId", referencedName = "houseRemoteId")
-    })
-    private List<Titles> titles;
-
+    
     @ToMany(joinProperties = {
             @JoinProperty(name = "remoteId", referencedName = "personHouseRemoteId")
     })
@@ -106,36 +100,6 @@ public class House {
 
     public void setWords(String words) {
         this.words = words;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1909619479)
-    public List<Titles> getTitles() {
-        if (titles == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            TitlesDao targetDao = daoSession.getTitlesDao();
-            List<Titles> titlesNew = targetDao._queryHouse_Titles(remoteId);
-            synchronized (this) {
-                if (titles == null) {
-                    titles = titlesNew;
-                }
-            }
-        }
-        return titles;
-    }
-
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 1506933621)
-    public synchronized void resetTitles() {
-        titles = null;
     }
 
     /**
@@ -204,9 +168,7 @@ public class House {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 451323429)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
