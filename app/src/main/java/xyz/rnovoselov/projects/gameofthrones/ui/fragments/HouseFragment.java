@@ -20,8 +20,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import xyz.rnovoselov.projects.gameofthrones.R;
+import xyz.rnovoselov.projects.gameofthrones.data.managers.DataManager;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
+import xyz.rnovoselov.projects.gameofthrones.utils.AppConfig;
 import xyz.rnovoselov.projects.gameofthrones.utils.GotAvatarProcessor;
+
+import static android.R.attr.bitmap;
 
 /**
  * Created by novoselov on 13.10.2016.
@@ -29,11 +33,20 @@ import xyz.rnovoselov.projects.gameofthrones.utils.GotAvatarProcessor;
 
 public class HouseFragment extends Fragment {
 
+    private static final String ARG_HOUSE_REMOTE_ID = "ARG_HOUSE_REMOTE_ID";
     private RecyclerView mRecyclerView;
     private PersonalAdapter mPersonalAdapter;
 
     public HouseFragment() {
 
+    }
+
+    public static HouseFragment newInstance(int houseRemoteId) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_HOUSE_REMOTE_ID, houseRemoteId);
+        HouseFragment fragment = new HouseFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -46,8 +59,9 @@ public class HouseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRecyclerView = ((RecyclerView) inflater.inflate(R.layout.fragment_house, container, false));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<Person> persons = new ArrayList<>();
-        persons.add(new Person(1l, 2l, 3l, "Roman Novoselov", true, "", 4l, 5l));
+        List<Person> persons = DataManager
+                .getInstance()
+                .getHousePersonsFromDb(getArguments().getInt(ARG_HOUSE_REMOTE_ID));
         mPersonalAdapter = new PersonalAdapter(persons);
         mRecyclerView.setAdapter(mPersonalAdapter);
         return mRecyclerView;
@@ -60,6 +74,7 @@ public class HouseFragment extends Fragment {
         private TextView mNameTextView;
         private TextView mTitleTextView;
         private ImageView mAvatarImageView;
+        private Bitmap bitmap;
 
         public PersonalHolder(View itemView) {
             super(itemView);
@@ -73,11 +88,12 @@ public class HouseFragment extends Fragment {
             mPerson = person;
             mNameTextView.setText(person.getName());
             mTitleTextView.setText(person.getName());
-            int px = getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar);
-            GotAvatarProcessor avatarProcessor = new GotAvatarProcessor(getActivity(), px, px);
-
-            Bitmap bitmap = avatarProcessor
+            GotAvatarProcessor avatarProcessor = new GotAvatarProcessor(
+                    getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar),
+                    getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar));
+            bitmap = avatarProcessor
                     .setTextColor(Color.WHITE)
+                    .setStaticColorGeneratorKey(person.getName())
                     .setColorsArray(getActivity(), R.array.letter_colors)
                     .setTextFontSize(getActivity(), R.dimen.font_increased_16)
                     .getLetterTile(person.getName())

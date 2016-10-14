@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.rnovoselov.projects.gameofthrones.R;
 import xyz.rnovoselov.projects.gameofthrones.ui.fragments.HouseFragment;
+import xyz.rnovoselov.projects.gameofthrones.utils.AppConfig;
 import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
 
 /**
@@ -44,10 +46,10 @@ public class HouseListActivity extends BaseActivity {
             R.drawable.stark_icon,
             R.drawable.targarien_icon
     };
-    private String[] tabText = {
-            ConstantManager.LANNISTER_HOUSE_TITLE,
-            ConstantManager.STARKS_HOUSE_TITLE,
-            ConstantManager.TARGARYENS_HOUSE_TITLE
+    private int[] tabText = {
+            R.string.lannister_home_title,
+            R.string.stark_home_title,
+            R.string.targariens_home_title
     };
 
     @Override
@@ -58,9 +60,9 @@ public class HouseListActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
 
         setupViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -71,9 +73,9 @@ public class HouseListActivity extends BaseActivity {
 
     private void setupViewPager(ViewPager vp) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HouseFragment(), ConstantManager.LANNISTER_HOUSE_TITLE);
-        adapter.addFragment(new HouseFragment(), ConstantManager.STARKS_HOUSE_TITLE);
-        adapter.addFragment(new HouseFragment(), ConstantManager.TARGARYENS_HOUSE_TITLE);
+        adapter.addFragment(HouseFragment.newInstance(AppConfig.LANNISTER_HOUSE_ID), getResources().getString(R.string.lannister_home_title));
+        adapter.addFragment(HouseFragment.newInstance(AppConfig.STARK_HOUSE_ID), getString(R.string.stark_home_title));
+        adapter.addFragment(HouseFragment.newInstance(AppConfig.TARGARYEN_HOUSE_ID), getString(R.string.targariens_home_title));
         mViewPager.setAdapter(adapter);
     }
 
@@ -87,7 +89,7 @@ public class HouseListActivity extends BaseActivity {
                 .fit()
                 .centerCrop()
                 .into(iv);
-        tv.setText(tabText[tabAtId]);
+        tv.setText(getString(tabText[tabAtId]));
         mTabLayout.getTabAt(tabAtId).setCustomView(view);
     }
 

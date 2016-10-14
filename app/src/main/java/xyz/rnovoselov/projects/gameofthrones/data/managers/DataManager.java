@@ -1,11 +1,11 @@
 package xyz.rnovoselov.projects.gameofthrones.data.managers;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import xyz.rnovoselov.projects.gameofthrones.data.network.RestService;
 import xyz.rnovoselov.projects.gameofthrones.data.network.ServiceGenerator;
@@ -13,7 +13,9 @@ import xyz.rnovoselov.projects.gameofthrones.data.network.res.HouseModelRes;
 import xyz.rnovoselov.projects.gameofthrones.data.network.res.PersonModelRes;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.DaoSession;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
+import xyz.rnovoselov.projects.gameofthrones.data.storage.models.PersonDao;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Titles;
+import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
 import xyz.rnovoselov.projects.gameofthrones.utils.GotApplication;
 
 /**
@@ -21,6 +23,8 @@ import xyz.rnovoselov.projects.gameofthrones.utils.GotApplication;
  */
 
 public class DataManager {
+
+    private static final String TAG = ConstantManager.TAG_PREFIX + DataManager.class.getSimpleName();
 
     private Context mContext;
     private RestService mRestService;
@@ -68,11 +72,18 @@ public class DataManager {
     //region ========== DATABASE ==========
 
     public List<Person> getHousePersonsFromDb(int homeId) {
-        return new ArrayList<>();
-    }
-
-    public List<Titles> getHouseTitlesFromDb(int homeId) {
-        return new ArrayList<>();
+        List<Person> persons = new ArrayList<>();
+        try {
+            persons = mDaoSession.queryBuilder(Person.class)
+                    .where(PersonDao.Properties.PersonHouseRemoteId.eq(homeId))
+                    .orderAsc(PersonDao.Properties.Name)
+                    .build()
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Ошибка получения данных из БД", e);
+        }
+        return persons;
     }
 
     //endregion

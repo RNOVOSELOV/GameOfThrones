@@ -20,49 +20,100 @@ import xyz.rnovoselov.projects.gameofthrones.R;
  * Created by novoselov on 14.10.2016.
  */
 
+/**
+ * Класс для генерации аватара персонажа, так как апи пока н епредоставляет его
+ */
 public class GotAvatarProcessor {
     private final TextPaint mPaint = new TextPaint();
     private final Rect mBounds = new Rect();
     private final Canvas mCanvas = new Canvas();
-    private TypedArray mColors = null;
+    private TypedArray mColors;
     private int mTileLetterFontSize;
     private Bitmap mDefaultBitmap;
     private int mWidth;
     private int mHeight;
+    String key;
 
-    public GotAvatarProcessor(Context context, int width, int height) {
-        final Resources res = context.getResources();
+    /**
+     * Конструктор
+     *
+     * @param width  ширина иконки
+     * @param height высота иконки
+     */
+    public GotAvatarProcessor(int width, int height) {
+        key = Calendar.getInstance().toString();
         this.mWidth = width;
         this.mHeight = height;
-
+        mColors = null;
         mPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         mPaint.setColor(Color.WHITE);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setAntiAlias(true);
-
-        mTileLetterFontSize = res.getDimensionPixelSize(R.dimen.font_small_12);
+        mTileLetterFontSize = 32;
         mDefaultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     }
 
+    /**
+     * Метод задаем массив цветов, из которых будет выбираться случайный цвет для аватарки.
+     * Либо цвет на основании ключа при использовании setStaticColorGeneratorKey(String key).
+     *
+     * @param context    контекст для получения списка цветов.
+     * @param colorArray идентификатор ресурса массива цветов из R.array
+     * @return
+     */
     public GotAvatarProcessor setColorsArray(Context context, int colorArray) {
         final Resources res = context.getResources();
         mColors = res.obtainTypedArray(colorArray);
         return this;
     }
 
+    /**
+     * Метод для задания статического ключа выбора цвета из массива цветов. Если не задать,
+     * то цвет будет выбираться на основании времени генерации иконки. Задавая статический ключ исключаем
+     * возможность появления разных цветов фона для одного и того же персонажа
+     *
+     * @param key статический ключ типа {@link String} для выбора цвета из массива цветов
+     * @return
+     */
+    public GotAvatarProcessor setStaticColorGeneratorKey(String key) {
+        this.key = key;
+        return this;
+    }
+
+    /**
+     * Метод задает цвет для букв в аватарке (по умолчанию белый)
+     *
+     * @param color цвет
+     * @return
+     */
     public GotAvatarProcessor setTextColor(int color) {
         mPaint.setColor(color);
         return this;
     }
 
+    /**
+     * Метод задает размер шрифта в иконке.
+     *
+     * @param context  контекст.
+     * @param fontSize идентификатор, указывающий на размер шрифта в sp
+     * @return
+     */
     public GotAvatarProcessor setTextFontSize(Context context, int fontSize) {
         final Resources res = context.getResources();
         mTileLetterFontSize = res.getDimensionPixelSize(fontSize);
         return this;
     }
 
+
+    /**
+     * Метод получает строку, из которой получаем буквы для вставки в иконку.
+     * Если строка состоит из одного слова, то вставляется первая буква слова.
+     * Если строка сотоит из двух или более слов, то вставляются первые буквы первого и второго слов.
+     *
+     * @param displayName строка из которой выбираются буквы для иконки.
+     * @return
+     */
     public GotAvatarProcessor getLetterTile(String displayName) {
-        String key = Calendar.getInstance().toString();
         final Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
 
         final char[] mChars;
@@ -81,21 +132,21 @@ public class GotAvatarProcessor {
 
         final Canvas c = mCanvas;
         c.setBitmap(bitmap);
-        c.drawColor(pickColor(key));
+        c.drawColor(pickColor());
 
         mPaint.setTextSize(mTileLetterFontSize);
         mPaint.getTextBounds(mChars, 0, mChars.length, mBounds);
-        c.drawText(mChars, 0, mChars.length, 0 + mWidth / 2, 0 + mHeight / 2
-                + (mBounds.bottom - mBounds.top) / 2, mPaint);
+        c.drawText(mChars, 0, mChars.length, (float) (mWidth / 2), (float) (mHeight / 2 + (mBounds.bottom - mBounds.top) / 2), mPaint);
         mDefaultBitmap = bitmap;
         return this;
     }
 
-    private static boolean isEnglishLetterOrDigit(char c) {
-        return 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' || '0' <= c && c <= '9';
-    }
-
-    private int pickColor(String key) {
+    /**
+     * Метод для выбора цвета из массива цветов. Если массив не указан, по умолчанию используется черный цвет.
+     *
+     * @return
+     */
+    private int pickColor() {
         if (mColors == null) {
             return Color.BLACK;
         }
@@ -107,6 +158,11 @@ public class GotAvatarProcessor {
         }
     }
 
+    /**
+     * Метод для преобразования иконки в круг.
+     *
+     * @return
+     */
     public GotAvatarProcessor transformToCircle() {
         Bitmap source = mDefaultBitmap;
         int size = Math.min(source.getWidth(), source.getHeight());
@@ -135,6 +191,11 @@ public class GotAvatarProcessor {
         return this;
     }
 
+    /**
+     * Метод возвращает сформированную иконку
+     *
+     * @return сформированный обьект типа {@link Bitmap}
+     */
     public Bitmap process() {
         return mDefaultBitmap;
     }
