@@ -118,7 +118,13 @@ public class HouseFragment extends Fragment {
         public void bindPerson(Person person) {
             mPerson = person;
             mNameTextView.setText(person.getName());
-            mTitleTextView.setText(person.getName());
+            String string = "";
+            try {
+                string = person.getCharacteristics().get(0).getCharacteristic();
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+            mTitleTextView.setText(string);
             GotAvatarProcessor avatarProcessor = new GotAvatarProcessor(
                     getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar),
                     getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar));
