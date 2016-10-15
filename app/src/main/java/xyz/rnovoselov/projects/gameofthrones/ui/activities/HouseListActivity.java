@@ -75,6 +75,7 @@ public class HouseListActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.app_developer);
         }
         setupDrawer();
 

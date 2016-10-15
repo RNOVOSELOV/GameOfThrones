@@ -18,19 +18,21 @@ public class Titles {
         this.titlePersonRemoteId = remotePersonId;
         this.isTitle = isTitle;
         this.characteristic = text;
-    }
-
-    @Generated(hash = 718602066)
-    public Titles(Long id, @NotNull Long titlePersonRemoteId,
-            @NotNull Boolean isTitle, @NotNull String characteristic) {
-        this.id = id;
-        this.titlePersonRemoteId = titlePersonRemoteId;
-        this.isTitle = isTitle;
-        this.characteristic = characteristic;
+        this.compositeKey = String.valueOf(remotePersonId) + "_" + text;
     }
 
     @Generated(hash = 2082159104)
     public Titles() {
+    }
+
+    @Generated(hash = 917702975)
+    public Titles(Long id, @NotNull Long titlePersonRemoteId, @NotNull Boolean isTitle,
+            @NotNull String characteristic, @NotNull String compositeKey) {
+        this.id = id;
+        this.titlePersonRemoteId = titlePersonRemoteId;
+        this.isTitle = isTitle;
+        this.characteristic = characteristic;
+        this.compositeKey = compositeKey;
     }
 
     @Id
@@ -43,8 +45,11 @@ public class Titles {
     private Boolean isTitle;
 
     @NotNull
-    @Unique
     private String characteristic;
+
+    @NotNull
+    @Unique
+    private String compositeKey;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -136,5 +141,14 @@ public class Titles {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTitlesDao() : null;
     }
+
+    public String getCompositeKey() {
+        return this.compositeKey;
+    }
+
+    public void setCompositeKey(String compositeKey) {
+        this.compositeKey = compositeKey;
+    }
+    
 
 }

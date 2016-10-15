@@ -57,6 +57,9 @@ public class SplashScreenActivity extends BaseActivity {
         ButterKnife.bind(this);
         sessionCounter = 0;
 
+        if (savedInstanceState != null) {
+
+        }
 
         mHouseDao = mDataManager.getDaoSession().getHouseDao();
         mTitlesDao = mDataManager.getDaoSession().getTitlesDao();
@@ -121,7 +124,7 @@ public class SplashScreenActivity extends BaseActivity {
     }
 
     private void processPersonUrl(final int houseId, String url) {
-        String [] parts = url.split("/");
+        String[] parts = url.split("/");
         final String personId = parts[parts.length - 1];
         Call<PersonModelRes> call = mDataManager.getPerson(personId);
         call.enqueue(new Callback<PersonModelRes>() {
@@ -153,10 +156,9 @@ public class SplashScreenActivity extends BaseActivity {
         });
     }
 
-    void launchMainActivity () {
-        Log.d(TAG, String.valueOf(sessionCounter));
+    void launchMainActivity() {
         sessionCounter--;
-        if (sessionCounter != 0){
+        if (sessionCounter != 0) {
             return;
         }
 
@@ -164,7 +166,6 @@ public class SplashScreenActivity extends BaseActivity {
         mPersonDao.insertOrReplaceInTx(persons);
         mTitlesDao.insertOrReplaceInTx(titles);
         hideProgress();
-
         Intent intent = new Intent(this, HouseListActivity.class);
         startActivity(intent);
         ActivityCompat.finishAfterTransition(this);
