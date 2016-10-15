@@ -9,7 +9,9 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorControlNormal">@color/white</item>
+    </style>
 
     <style name="AppTheme.Button.Accent" parent="Base.Widget.AppCompat.Button">
         <item name="colorButtonNormal">@color/color_accent</item>
@@ -55,8 +57,15 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:enabled">false</item>
         <item name="android:focusable">false</item>
-        <item name="android:textColor">@color/grey</item>
-        <item name="android:textColorHint">@color/grey_dark</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+        <item name="android:textColor">@color/grey_dark</item>
+        <item name="android:textColorHint">@color/black</item>
+    </style>
+
+    <style name="hint_edit_text_style" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
 </resources>

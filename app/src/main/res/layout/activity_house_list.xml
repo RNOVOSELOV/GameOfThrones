@@ -19,21 +19,22 @@
             android:background="?attr/colorPrimary"
             android:theme="@style/AppTheme.AppBarOverlay">
 
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/house_activity_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/AppTheme.PopupOverlay"
-                app:layout_scrollFlags="scroll|enterAlways"
+                app:layout_collapseMode="pin"
                 app:titleTextColor="@color/white" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/house_activity_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/custom_tab_layout_height"
-                app:layout_scrollFlags="scroll|enterAlways"
                 app:tabGravity="fill"
                 app:tabMode="fixed" />
+
 
         </android.support.design.widget.AppBarLayout>
 
