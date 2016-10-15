@@ -53,6 +53,7 @@
     <dimen name="nav_drawer_height">172dp</dimen>
 
     <dimen name="size_custom_tab_icon">40dp</dimen>
+    <dimen name="size_list">44dp</dimen>
     <dimen name="size_rv_avatar">40dp</dimen>
     <dimen name="size_small_24">24dp</dimen>
     <dimen name="margin_72">72dp</dimen>

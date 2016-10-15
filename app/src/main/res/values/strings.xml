@@ -7,7 +7,13 @@
     <string name="person_hint_born">Born:</string>
     <string name="person_hint_titles">Titles:</string>
     <string name="person_hint_aliases">Aliases:</string>
+    <string name="person_hint_father">Father:</string>
+    <string name="person_hint_mother">Mother:</string>
     <string name="error_person_activity_no_person">Failed to get information about character</string>
+    <string name="error_no_person">No data available</string>
     <string name="app_developer">Roman Novoselov</string>
+    <string name="menu_search_item">Search</string>
+    <string name="menu_search_hint">Search character of the house</string>
+    <string name="no_info">no info</string>
 
 </resources>

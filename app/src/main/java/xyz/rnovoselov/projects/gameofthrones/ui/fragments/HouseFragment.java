@@ -1,12 +1,11 @@
 package xyz.rnovoselov.projects.gameofthrones.ui.fragments;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.view.CollapsibleActionView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,10 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import xyz.rnovoselov.projects.gameofthrones.R;
@@ -27,8 +23,6 @@ import xyz.rnovoselov.projects.gameofthrones.ui.activities.PersonInfoActivity;
 import xyz.rnovoselov.projects.gameofthrones.utils.AppConfig;
 import xyz.rnovoselov.projects.gameofthrones.utils.GotAvatarProcessor;
 
-import static android.R.attr.bitmap;
-
 /**
  * Created by novoselov on 13.10.2016.
  */
@@ -37,7 +31,11 @@ public class HouseFragment extends Fragment {
 
     private static final String ARG_HOUSE_REMOTE_ID = "ARG_HOUSE_REMOTE_ID";
     private RecyclerView mRecyclerView;
+    private TextView mTextViewNoData;
     private PersonalAdapter mPersonalAdapter;
+    private int houseId;
+    private Handler mSearchHandler;
+    private Runnable searchRunnable;
 
     public HouseFragment() {
 
@@ -59,14 +57,46 @@ public class HouseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRecyclerView = ((RecyclerView) inflater.inflate(R.layout.fragment_house, container, false));
+        View view = inflater.inflate(R.layout.fragment_house, container, false);
+        mTextViewNoData = ((TextView) view.findViewById(R.id.house_fragment_tv));
+        mRecyclerView = ((RecyclerView) view.findViewById(R.id.house_fragment_rv));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        houseId = getArguments().getInt(ARG_HOUSE_REMOTE_ID);
+        mSearchHandler = new Handler();
+        showPersons();
+        return view;
+    }
+
+    public void showPersons() {
         List<Person> persons = DataManager
                 .getInstance()
-                .getHousePersonsFromDb(getArguments().getInt(ARG_HOUSE_REMOTE_ID));
+                .getHousePersonsFromDb(houseId);
+        showPersons(persons);
+    }
+
+    public void showPersons(final String name) {
+
+        mSearchHandler.removeCallbacks(searchRunnable);
+        searchRunnable = new Runnable() {
+            @Override
+            public void run() {
+                List<Person> persons = DataManager
+                        .getInstance()
+                        .getHousePersonsByNameFromDb(houseId, name);
+                showPersons(persons);
+            }
+        };
+        mSearchHandler.postDelayed(searchRunnable, AppConfig.SEARCH_DELAY);
+    }
+
+    public void showPersons(List<Person> persons) {
+        if (persons.size() == 0) {
+            mTextViewNoData.setVisibility(View.VISIBLE);
+        } else {
+            mTextViewNoData.setVisibility(View.GONE);
+        }
         mPersonalAdapter = new PersonalAdapter(persons);
-        mRecyclerView.setAdapter(mPersonalAdapter);
-        return mRecyclerView;
+        mRecyclerView.swapAdapter(mPersonalAdapter, false);
     }
 
     private class PersonalHolder extends RecyclerView.ViewHolder
@@ -94,7 +124,7 @@ public class HouseFragment extends Fragment {
                     getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar));
             Bitmap bitmap = avatarProcessor
                     .setTextColor(Color.WHITE)
-                    .setStaticColorGeneratorKey(person.getName())
+                    .setStaticColorGeneratorKey(person.getName() + String.valueOf(person.getPersonRemoteId()))
                     .setColorsArray(getActivity(), R.array.letter_colors)
                     .setTextFontSize(getActivity(), R.dimen.font_increased_16)
                     .getLetterTile(person.getName())

@@ -11,10 +11,12 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:editTextColor">@color/white</item>
     </style>
 
     <style name="AppTheme.Button.Accent" parent="Base.Widget.AppCompat.Button">
-        <item name="colorButtonNormal">@color/color_accent</item>
+        <item name="colorButtonNormal">@color/color_primary</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
@@ -29,6 +31,10 @@
         <item name="android:layout_marginLeft">@dimen/margin_normal_24</item>
     </style>
 
+    <style name="person_icons.default_icon">
+        <item name="android:src">@drawable/icon_item_property</item>
+    </style>
+
     <style name="person_layout_item_overal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -39,7 +45,7 @@
 
     <style name="person_layout_item">
         <item name="android:layout_marginLeft">@dimen/margin_increased_32</item>
-        <item name="android:layout_marginRight">@dimen/margin_72</item>
+        <item name="android:layout_marginRight">@dimen/margin_small_16</item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">bottom</item>
         <item name="android:orientation">vertical</item>
@@ -66,6 +72,11 @@
     <style name="hint_edit_text_style" parent="TextAppearance.Design.Hint">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="person_text_view_description">
+        <item name="android:fontFamily">sans-serif-regular</item>
+        <item name="android:textSize">@dimen/font_increased_16</item>
     </style>
 
 </resources>

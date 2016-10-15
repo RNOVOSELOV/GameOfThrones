@@ -103,6 +103,22 @@ public class DataManager {
         return persons;
     }
 
+    public List<Person> getHousePersonsByNameFromDb(int homeId, String nm) {
+        List<Person> persons = new ArrayList<>();
+        try {
+            persons = mDaoSession.queryBuilder(Person.class)
+                    .where(PersonDao.Properties.PersonHouseRemoteId.eq(homeId),
+                            PersonDao.Properties.SearchName.like("%" + nm.toUpperCase() + "%"))
+                    .orderAsc(PersonDao.Properties.Name)
+                    .build()
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Ошибка получения данных из БД", e);
+        }
+        return persons;
+    }
+
     public Person getPersonFromDb(Long remoteId) {
         Person person = new Person();
         try {

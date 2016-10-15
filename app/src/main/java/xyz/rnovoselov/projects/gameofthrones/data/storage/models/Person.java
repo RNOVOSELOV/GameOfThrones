@@ -20,6 +20,10 @@ import xyz.rnovoselov.projects.gameofthrones.data.network.res.PersonModelRes;
 @Entity(active = true, nameInDb = "PERSON")
 public class Person {
 
+    public Person(Long personRemoteId, PersonModelRes model) {
+        this (null, personRemoteId, model);
+    }
+
     public Person(Long houseRemoteId, Long personRemoteId, PersonModelRes model) {
         this.personHouseRemoteId = houseRemoteId;
         this.personRemoteId = personRemoteId;
@@ -34,15 +38,17 @@ public class Person {
 
         this.father = model.getFather();
         this.mother = model.getMother();
+        this.searchName = model.getName().toUpperCase();
     }
 
-    @Generated(hash = 1047763414)
-    public Person(Long id, @NotNull Long personRemoteId, @NotNull Long personHouseRemoteId,
-            @NotNull String name, Boolean sex, String born, Long father, Long mother) {
+    @Generated(hash = 1335342339)
+    public Person(Long id, @NotNull Long personRemoteId, Long personHouseRemoteId, @NotNull String name,
+            @NotNull String searchName, Boolean sex, String born, Long father, Long mother) {
         this.id = id;
         this.personRemoteId = personRemoteId;
         this.personHouseRemoteId = personHouseRemoteId;
         this.name = name;
+        this.searchName = searchName;
         this.sex = sex;
         this.born = born;
         this.father = father;
@@ -59,12 +65,14 @@ public class Person {
     @NotNull
     @Unique
     private Long personRemoteId;
-
-    @NotNull
+    
     private Long personHouseRemoteId;
 
     @NotNull
     private String name;
+
+    @NotNull
+    private String searchName;
 
     private Boolean sex;
 
@@ -221,5 +229,13 @@ public class Person {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getPersonDao() : null;
+    }
+
+    public String getSearchName() {
+        return this.searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
     }
 }

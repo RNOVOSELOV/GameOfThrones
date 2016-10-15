@@ -1,6 +1,8 @@
 package xyz.rnovoselov.projects.gameofthrones.ui.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -9,17 +11,21 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -29,6 +35,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.rnovoselov.projects.gameofthrones.R;
+import xyz.rnovoselov.projects.gameofthrones.data.storage.models.House;
+import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
 import xyz.rnovoselov.projects.gameofthrones.ui.fragments.HouseFragment;
 import xyz.rnovoselov.projects.gameofthrones.utils.AppConfig;
 import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
@@ -38,6 +46,8 @@ import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
  */
 
 public class HouseListActivity extends BaseActivity {
+
+    private static final String EXTRA_VIEW_PAGER_TAB = "EXTRA_VIEW_PAGER_TAB";
 
     @BindView(R.id.house_activity_coordinator)
     CoordinatorLayout mCoordinatorLayout;
@@ -62,6 +72,12 @@ public class HouseListActivity extends BaseActivity {
             R.string.stark_home_title,
             R.string.targariens_home_title
     };
+    private HouseFragment lannisterFragment;
+    private HouseFragment starksFragment;
+    private HouseFragment targariensFragment;
+    SearchView searchView;
+
+    private MenuItem mSearchItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +100,53 @@ public class HouseListActivity extends BaseActivity {
         setupTabIcon(ConstantManager.LANNISTER_HOUSE_TAB_ID);
         setupTabIcon(ConstantManager.STARKS_HOUSE_TAB_ID);
         setupTabIcon(ConstantManager.TARGARYENS_HOUSE_TAB_ID);
+
+        if (savedInstanceState != null) {
+            int currentVpTab = savedInstanceState.getInt(EXTRA_VIEW_PAGER_TAB, 0);
+            mViewPager.setCurrentItem(currentVpTab);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_VIEW_PAGER_TAB, mViewPager.getCurrentItem());
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        mSearchItem = menu.findItem(R.id.menu_search_action);
+        searchView = ((SearchView) MenuItemCompat.getActionView(mSearchItem));
+        searchView.setQueryHint(getString(R.string.menu_search_hint));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                HouseFragment currFragment;
+                switch (mViewPager.getCurrentItem()) {
+                    case 0:
+                        currFragment = lannisterFragment;
+                        break;
+                    case 1:
+                        currFragment = starksFragment;
+                        break;
+                    default:
+                        currFragment = targariensFragment;
+                }
+                if (newText.isEmpty()) {
+                    currFragment.showPersons();
+                } else {
+                    currFragment.showPersons(newText);
+                }
+                return false;
+            }
+        });
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -128,9 +191,12 @@ public class HouseListActivity extends BaseActivity {
 
     private void setupViewPager(ViewPager vp) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(HouseFragment.newInstance(AppConfig.LANNISTER_HOUSE_ID), getResources().getString(R.string.lannister_home_title));
-        adapter.addFragment(HouseFragment.newInstance(AppConfig.STARK_HOUSE_ID), getString(R.string.stark_home_title));
-        adapter.addFragment(HouseFragment.newInstance(AppConfig.TARGARYEN_HOUSE_ID), getString(R.string.targariens_home_title));
+        lannisterFragment = HouseFragment.newInstance(AppConfig.LANNISTER_HOUSE_ID);
+        starksFragment = HouseFragment.newInstance(AppConfig.STARK_HOUSE_ID);
+        targariensFragment = HouseFragment.newInstance(AppConfig.TARGARYEN_HOUSE_ID);
+        adapter.addFragment(lannisterFragment, getResources().getString(R.string.lannister_home_title));
+        adapter.addFragment(starksFragment, getString(R.string.stark_home_title));
+        adapter.addFragment(targariensFragment, getString(R.string.targariens_home_title));
         mViewPager.setAdapter(adapter);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -145,6 +211,7 @@ public class HouseListActivity extends BaseActivity {
                 mNavigationView.getMenu().getItem(1).setChecked(false);
                 mNavigationView.getMenu().getItem(2).setChecked(false);
                 mNavigationView.getMenu().getItem(position).setChecked(true);
+                searchView.setQuery("", false);
             }
 
             @Override

@@ -10,8 +10,7 @@
 
         <ImageView
             android:id="@+id/person_activity_icon_words"
-            style="@style/person_icons"
-            tools:src="@color/pink" />
+            style="@style/person_icons.default_icon" />
 
         <LinearLayout
             style="@style/person_layout_item"
@@ -38,8 +37,7 @@
 
         <ImageView
             android:id="@+id/person_activity_icon_born"
-            style="@style/person_icons"
-            tools:src="@color/pink" />
+            style="@style/person_icons.default_icon" />
 
         <LinearLayout
             style="@style/person_layout_item"
@@ -66,25 +64,24 @@
 
         <ImageView
             android:id="@+id/person_activity_icon_titles"
-            style="@style/person_icons"
-            tools:src="@color/pink" />
+            style="@style/person_icons.default_icon" />
 
         <LinearLayout
             style="@style/person_layout_item"
             android:layout_width="0dp"
-            android:layout_height="72dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
+                style="@style/person_text_view_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/hint_edit_text_style">
+                android:text="@string/person_hint_titles" />
 
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/person_activity_et_titles"
-                    style="@style/person_edit_text"
-                    android:hint="@string/person_hint_titles"
-                    tools:text="Test" />
-            </android.support.design.widget.TextInputLayout>
+            <ListView
+                android:id="@+id/person_activity_titles_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 
@@ -94,25 +91,103 @@
 
         <ImageView
             android:id="@+id/person_activity_icon_aliases"
-            style="@style/person_icons"
-            tools:src="@color/pink" />
+            style="@style/person_icons.default_icon" />
 
         <LinearLayout
             style="@style/person_layout_item"
             android:layout_width="0dp"
-            android:layout_height="72dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
+                style="@style/person_text_view_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/hint_edit_text_style">
+                android:text="@string/person_hint_aliases" />
 
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/person_activity_et_aliases"
-                    style="@style/person_edit_text"
-                    android:hint="@string/person_hint_aliases"
-                    tools:text="Test" />
-            </android.support.design.widget.TextInputLayout>
+            <ListView
+                android:id="@+id/person_activity_aliases_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/person_divider" />
+
+
+    <LinearLayout style="@style/person_layout_item_overal">
+
+        <ImageView
+            android:id="@+id/person_activity_icon_father"
+            style="@style/person_icons" />
+
+        <LinearLayout
+            style="@style/person_layout_item"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/person_text_view_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/person_hint_father" />
+
+            <TextView
+                android:id="@+id/person_activity_father_no_info_tv"
+                style="@style/person_text_view_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_little_8"
+                android:text="@string/no_info" />
+
+            <Button
+                android:id="@+id/person_activity_bt_father"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:theme="@style/AppTheme.Button.Accent"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/person_divider" />
+
+    <LinearLayout style="@style/person_layout_item_overal">
+
+        <ImageView
+            android:id="@+id/person_activity_icon_mother"
+            style="@style/person_icons" />
+
+        <LinearLayout
+            style="@style/person_layout_item"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/person_text_view_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/person_hint_mother" />
+
+            <TextView
+                android:id="@+id/person_activity_mother_no_info_tv"
+                style="@style/person_text_view_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_little_8"
+                android:text="@string/no_info" />
+
+            <Button
+                android:id="@+id/person_activity_bt_mother"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:theme="@style/AppTheme.Button.Accent"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 
