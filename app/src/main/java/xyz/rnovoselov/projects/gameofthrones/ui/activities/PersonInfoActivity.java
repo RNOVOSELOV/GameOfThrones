@@ -207,7 +207,7 @@ public class PersonInfoActivity extends BaseActivity {
             @Override
             public void onResponse(Call<PersonModelRes> call, Response<PersonModelRes> response) {
                 if (response.code() == 200) {
-                    Person person = new Person(Long.valueOf(personId), response.body());
+                    Person person = new Person(mPerson.getPersonHouseRemoteId(), Long.valueOf(personId), response.body());
                     mDataManager.getDaoSession().getPersonDao().insertOrReplace(person);
                     List<String> ttls = response.body().getTitles();
                     List<String> alses = response.body().getAliases();
