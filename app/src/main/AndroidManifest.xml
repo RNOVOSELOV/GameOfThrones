@@ -23,6 +23,11 @@
         <activity android:name=".ui.activities.HouseListActivity">
 
         </activity>
+
+        <activity android:name=".ui.activities.PersonInfoActivity"
+            android:parentActivityName=".ui.activities.HouseListActivity">
+
+        </activity>
     </application>
 
 </manifest>

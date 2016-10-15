@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -46,7 +47,7 @@ public class SplashScreenActivity extends BaseActivity {
     private volatile List<Person> persons = new ArrayList<>();
     private volatile List<House> houses = new ArrayList<>();
     private volatile List<Titles> titles = new ArrayList<>();
-    private volatile int sessionsStarted;
+    private volatile int sessionCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class SplashScreenActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         mDataManager = DataManager.getInstance();
         ButterKnife.bind(this);
-        sessionsStarted = 0;
+        sessionCounter = 0;
 
 
         mHouseDao = mDataManager.getDaoSession().getHouseDao();
@@ -69,6 +70,7 @@ public class SplashScreenActivity extends BaseActivity {
         processHouse(AppConfig.STARK_HOUSE_ID);
         processHouse(AppConfig.LANNISTER_HOUSE_ID);
         processHouse(AppConfig.TARGARYEN_HOUSE_ID);
+        sessionCounter = sessionCounter + 3;
     }
 
     @Override
@@ -90,15 +92,14 @@ public class SplashScreenActivity extends BaseActivity {
 
     private void processHouse(final int id) {
         if (NetworkStatusChecker.isNetworkAvailable(this)) {
-
             Call<HouseModelRes> call = mDataManager.getHouse(String.valueOf(id));
-            sessionsStarted++;
             call.enqueue(new Callback<HouseModelRes>() {
                 @Override
                 public void onResponse(Call<HouseModelRes> call, Response<HouseModelRes> response) {
                     if (response.code() == 200) {
                         houses.add(new House((long) id, response.body()));
                         List<String> housePersonUrls = response.body().getPersonsUrls();
+                        sessionCounter += housePersonUrls.size();
                         for (String urlPerson : housePersonUrls) {
                             processPersonUrl(id, urlPerson);
                         }
@@ -123,16 +124,17 @@ public class SplashScreenActivity extends BaseActivity {
         String [] parts = url.split("/");
         final String personId = parts[parts.length - 1];
         Call<PersonModelRes> call = mDataManager.getPerson(personId);
-        sessionsStarted++;
         call.enqueue(new Callback<PersonModelRes>() {
             @Override
             public void onResponse(Call<PersonModelRes> call, Response<PersonModelRes> response) {
                 if (response.code() == 200) {
                     persons.add(new Person((long) houseId, Long.valueOf(personId), response.body()));
-                    for (String title : response.body().getTitles()) {
+                    List<String> ttls = response.body().getTitles();
+                    List<String> alses = response.body().getAliases();
+                    for (String title : ttls) {
                         titles.add(new Titles(Long.valueOf(personId), true, title));
                     }
-                    for (String alias : response.body().getAliases()) {
+                    for (String alias : alses) {
                         titles.add(new Titles(Long.valueOf(personId), false, alias));
                     }
                 } else if (response.code() == 404) {
@@ -152,8 +154,9 @@ public class SplashScreenActivity extends BaseActivity {
     }
 
     void launchMainActivity () {
-        sessionsStarted--;
-        if (sessionsStarted != 0){
+        Log.d(TAG, String.valueOf(sessionCounter));
+        sessionCounter--;
+        if (sessionCounter != 0){
             return;
         }
 

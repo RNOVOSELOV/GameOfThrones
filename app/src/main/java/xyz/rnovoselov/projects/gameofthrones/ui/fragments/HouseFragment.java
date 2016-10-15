@@ -1,5 +1,6 @@
 package xyz.rnovoselov.projects.gameofthrones.ui.fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.util.List;
 import xyz.rnovoselov.projects.gameofthrones.R;
 import xyz.rnovoselov.projects.gameofthrones.data.managers.DataManager;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
+import xyz.rnovoselov.projects.gameofthrones.ui.activities.PersonInfoActivity;
 import xyz.rnovoselov.projects.gameofthrones.utils.AppConfig;
 import xyz.rnovoselov.projects.gameofthrones.utils.GotAvatarProcessor;
 
@@ -74,7 +76,6 @@ public class HouseFragment extends Fragment {
         private TextView mNameTextView;
         private TextView mTitleTextView;
         private ImageView mAvatarImageView;
-        private Bitmap bitmap;
 
         public PersonalHolder(View itemView) {
             super(itemView);
@@ -91,7 +92,7 @@ public class HouseFragment extends Fragment {
             GotAvatarProcessor avatarProcessor = new GotAvatarProcessor(
                     getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar),
                     getActivity().getResources().getDimensionPixelSize(R.dimen.size_rv_avatar));
-            bitmap = avatarProcessor
+            Bitmap bitmap = avatarProcessor
                     .setTextColor(Color.WHITE)
                     .setStaticColorGeneratorKey(person.getName())
                     .setColorsArray(getActivity(), R.array.letter_colors)
@@ -104,7 +105,7 @@ public class HouseFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(), mPerson.getName(), Toast.LENGTH_LONG).show();
+            startActivity(PersonInfoActivity.newIntent(getActivity(), mPerson.getPersonRemoteId()));
         }
     }
 

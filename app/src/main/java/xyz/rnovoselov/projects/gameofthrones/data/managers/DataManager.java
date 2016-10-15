@@ -15,6 +15,7 @@ import xyz.rnovoselov.projects.gameofthrones.data.storage.models.DaoSession;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.PersonDao;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Titles;
+import xyz.rnovoselov.projects.gameofthrones.data.storage.models.TitlesDao;
 import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
 import xyz.rnovoselov.projects.gameofthrones.utils.GotApplication;
 
@@ -84,6 +85,62 @@ public class DataManager {
             Log.e(TAG, "Ошибка получения данных из БД", e);
         }
         return persons;
+    }
+
+    public Person getPersonFromDb(Long remoteId) {
+        Person person = new Person();
+        try {
+            person = mDaoSession.queryBuilder(Person.class)
+                    .where(PersonDao.Properties.PersonRemoteId.eq(remoteId))
+                    .build()
+                    .unique();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Ошибка получения данных из БД", e);
+        }
+        return person;
+    }
+
+    public List<String> getPersonTitles(Long personRemoteId) {
+        List<Titles> titles = new ArrayList<>();
+        try {
+            titles = mDaoSession.queryBuilder(Titles.class)
+                    .where(TitlesDao.Properties.TitlePersonRemoteId.eq(personRemoteId), TitlesDao.Properties.IsTitle.eq(true))
+                    .orderAsc(TitlesDao.Properties.Characteristic)
+                    .build()
+                    .list();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Ошибка получения данных из БД", e);
+        }
+
+        List<String> personTitles = new ArrayList<>();
+        for (Titles t : titles) {
+            personTitles.add(t.getCharacteristic());
+        }
+        return personTitles;
+    }
+
+    public List<String> getPersonAliases(Long personRemoteId) {
+        List<Titles> titles = new ArrayList<>();
+        try {
+            titles = mDaoSession.queryBuilder(Titles.class)
+                    .where(TitlesDao.Properties.TitlePersonRemoteId.eq(personRemoteId), TitlesDao.Properties.IsTitle.eq(false))
+                    .orderAsc(TitlesDao.Properties.Characteristic)
+                    .build()
+                    .list();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Ошибка получения данных из БД", e);
+        }
+
+        List<String> personAliases = new ArrayList<>();
+        for (Titles t : titles) {
+            personAliases.add(t.getCharacteristic());
+        }
+        return personAliases;
     }
 
     //endregion
