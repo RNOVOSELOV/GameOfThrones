@@ -20,4 +20,43 @@
         <item name="android:fullDark">@android:color/transparent</item>
     </style>
 
+    <style name="person_icons">
+        <item name="android:layout_width">@dimen/size_small_24</item>
+        <item name="android:layout_height">@dimen/size_small_24</item>
+        <item name="android:layout_marginTop">@dimen/margin_normal_24</item>
+        <item name="android:layout_marginLeft">@dimen/margin_normal_24</item>
+    </style>
+
+    <style name="person_layout_item_overal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/margin_little_8</item>
+        <item name="android:layout_marginTop">@dimen/margin_little_8</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="person_layout_item">
+        <item name="android:layout_marginLeft">@dimen/margin_increased_32</item>
+        <item name="android:layout_marginRight">@dimen/margin_72</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="person_divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/size_little</item>
+        <item name="android:background">@color/grey</item>
+        <item name="android:layout_marginLeft">@dimen/margin_72</item>
+    </style>
+
+    <style name="person_edit_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:enabled">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textColorHint">@color/grey_dark</item>
+    </style>
+
 </resources>

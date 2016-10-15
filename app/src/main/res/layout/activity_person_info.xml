@@ -1,7 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/person_activity_coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.PersonInfoActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout style="@style/person_layout_item_overal">
+
+            <ImageView
+                android:id="@+id/person_activity_icon_words"
+                style="@style/person_icons"
+                tools:src="@color/pink" />
+
+            <LinearLayout
+                style="@style/person_layout_item"
+                android:layout_width="0dp"
+                android:layout_height="72dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/person_activity_et_words"
+                        style="@style/person_edit_text"
+                        android:hint="@string/person_hint_words"
+                        tools:text="Test" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/person_divider" />
+
+        <LinearLayout style="@style/person_layout_item_overal">
+
+            <ImageView
+                android:id="@+id/person_activity_icon_born"
+                style="@style/person_icons"
+                tools:src="@color/pink" />
+
+            <LinearLayout
+                style="@style/person_layout_item"
+                android:layout_width="0dp"
+                android:layout_height="72dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/person_activity_et_born"
+                        style="@style/person_edit_text"
+                        android:hint="@string/person_hint_born"
+                        tools:text="Test" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/person_divider" />
+
+        <LinearLayout style="@style/person_layout_item_overal">
+
+            <ImageView
+                android:id="@+id/person_activity_icon_titles"
+                style="@style/person_icons"
+                tools:src="@color/pink" />
+
+            <LinearLayout
+                style="@style/person_layout_item"
+                android:layout_width="0dp"
+                android:layout_height="72dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/person_activity_et_titles"
+                        style="@style/person_edit_text"
+                        android:hint="@string/person_hint_titles"
+                        tools:text="Test" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/person_divider" />
+
+        <LinearLayout style="@style/person_layout_item_overal">
+
+            <ImageView
+                android:id="@+id/person_activity_icon_aliases"
+                style="@style/person_icons"
+                tools:src="@color/pink" />
+
+            <LinearLayout
+                style="@style/person_layout_item"
+                android:layout_width="0dp"
+                android:layout_height="72dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/person_activity_et_aliases"
+                        style="@style/person_edit_text"
+                        android:hint="@string/person_hint_aliases"
+                        tools:text="Test" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/person_divider" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/person_activity_no_person_info_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/error_person_activity_no_person"
+        android:textSize="@dimen/font_increased_16"
+        android:visibility="gone">
+
+    </TextView>
+
 
 </android.support.design.widget.CoordinatorLayout>

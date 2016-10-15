@@ -1,7 +1,12 @@
 <resources>
-    <string name="app_name">Game of Thrones</string>
+    <string name="app_name">Roman Novoselov</string>
     <string name="lannister_home_title">LANNISTER</string>
     <string name="stark_home_title">STARK</string>
     <string name="targariens_home_title">TARGARYEN</string>
+    <string name="person_hint_words">Words:</string>
+    <string name="person_hint_born">Born:</string>
+    <string name="person_hint_titles">Titles:</string>
+    <string name="person_hint_aliases">Aliases:</string>
+    <string name="error_person_activity_no_person">Failed to get information about character</string>
 
 </resources>

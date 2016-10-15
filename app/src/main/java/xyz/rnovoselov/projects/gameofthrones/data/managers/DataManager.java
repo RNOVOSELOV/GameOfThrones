@@ -12,6 +12,8 @@ import xyz.rnovoselov.projects.gameofthrones.data.network.ServiceGenerator;
 import xyz.rnovoselov.projects.gameofthrones.data.network.res.HouseModelRes;
 import xyz.rnovoselov.projects.gameofthrones.data.network.res.PersonModelRes;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.DaoSession;
+import xyz.rnovoselov.projects.gameofthrones.data.storage.models.House;
+import xyz.rnovoselov.projects.gameofthrones.data.storage.models.HouseDao;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.PersonDao;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Titles;
@@ -71,6 +73,20 @@ public class DataManager {
     // endregion
 
     //region ========== DATABASE ==========
+
+    public House getHouseFromDb(Long homeId) {
+        House house = new House();
+        try {
+            house = mDaoSession.queryBuilder(House.class)
+                    .where(HouseDao.Properties.RemoteId.eq(homeId))
+                    .build()
+                    .unique();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Ошибка получения данных из БД", e);
+        }
+        return house;
+    }
 
     public List<Person> getHousePersonsFromDb(int homeId) {
         List<Person> persons = new ArrayList<>();

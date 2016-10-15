@@ -54,5 +54,8 @@
 
     <dimen name="size_custom_tab_icon">40dp</dimen>
     <dimen name="size_rv_avatar">40dp</dimen>
+    <dimen name="size_small_24">24dp</dimen>
+    <dimen name="margin_72">72dp</dimen>
+    <dimen name="size_little">1dp</dimen>
 
 </resources>
