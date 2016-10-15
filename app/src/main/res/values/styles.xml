@@ -20,6 +20,10 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="progress_style">
+        <item name="colorAccent">@color/color_primary</item>
+    </style>
+
     <style name="custom_dialog">
         <item name="android:fullDark">@android:color/transparent</item>
     </style>

@@ -44,6 +44,7 @@ public class SplashScreenActivity extends BaseActivity {
     private HouseDao mHouseDao;
     private TitlesDao mTitlesDao;
     private PersonDao mPersonDao;
+
     private volatile List<Person> persons = new ArrayList<>();
     private volatile List<House> houses = new ArrayList<>();
     private volatile List<Titles> titles = new ArrayList<>();
@@ -58,7 +59,7 @@ public class SplashScreenActivity extends BaseActivity {
         sessionCounter = 0;
 
         if (savedInstanceState != null) {
-
+            //сохранять массивы на случай поворотов
         }
 
         mHouseDao = mDataManager.getDaoSession().getHouseDao();
@@ -73,15 +74,12 @@ public class SplashScreenActivity extends BaseActivity {
         processHouse(AppConfig.STARK_HOUSE_ID);
         processHouse(AppConfig.LANNISTER_HOUSE_ID);
         processHouse(AppConfig.TARGARYEN_HOUSE_ID);
-        sessionCounter = sessionCounter + 3;
+        sessionCounter = sessionCounter + ConstantManager.USED_HOUSES_COUNT;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Picasso.with(this)
-                .load(R.drawable.splash)
-                .into(mImageView);
     }
 
     @Override
@@ -101,6 +99,9 @@ public class SplashScreenActivity extends BaseActivity {
                 public void onResponse(Call<HouseModelRes> call, Response<HouseModelRes> response) {
                     if (response.code() == 200) {
                         houses.add(new House((long) id, response.body()));
+//                        House house = new House((long) id, response.body());
+//                        mDataManager.getDaoSession().getHouseDao().insertOrReplace(house);
+
                         List<String> housePersonUrls = response.body().getPersonsUrls();
                         sessionCounter += housePersonUrls.size();
                         for (String urlPerson : housePersonUrls) {
@@ -132,13 +133,20 @@ public class SplashScreenActivity extends BaseActivity {
             public void onResponse(Call<PersonModelRes> call, Response<PersonModelRes> response) {
                 if (response.code() == 200) {
                     persons.add(new Person((long) houseId, Long.valueOf(personId), response.body()));
-                    List<String> ttls = response.body().getTitles();
-                    List<String> alses = response.body().getAliases();
-                    for (String title : ttls) {
+//                    Person person = new Person((long) houseId, Long.valueOf(personId), response.body());
+//                    mDataManager.getDaoSession().getPersonDao().insertOrReplace(person);
+
+                    List<String> titl = response.body().getTitles();
+                    List<String> alia = response.body().getAliases();
+                    for (String title : titl) {
                         titles.add(new Titles(Long.valueOf(personId), true, title));
+//                        Titles t = new Titles(Long.valueOf(personId), false, title);
+//                        mDataManager.getDaoSession().getTitlesDao().insertOrReplace(t);
                     }
-                    for (String alias : alses) {
+                    for (String alias : alia) {
                         titles.add(new Titles(Long.valueOf(personId), false, alias));
+//                        Titles t = new Titles(Long.valueOf(personId), false, alias);
+//                        mDataManager.getDaoSession().getTitlesDao().insertOrReplace(t);
                     }
                 } else if (response.code() == 404) {
                     showSnackbar("Персонаж не обнаружен");
@@ -161,7 +169,6 @@ public class SplashScreenActivity extends BaseActivity {
         if (sessionCounter != 0) {
             return;
         }
-
         mHouseDao.insertOrReplaceInTx(houses);
         mPersonDao.insertOrReplaceInTx(persons);
         mTitlesDao.insertOrReplaceInTx(titles);
