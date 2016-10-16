@@ -5,10 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +33,6 @@ public class SplashScreenActivity extends BaseActivity {
     private static final String TAG = ConstantManager.TAG_PREFIX + SplashScreenActivity.class.getSimpleName();
     @BindView(R.id.splash_coordinator)
     CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.splash_image_view)
-    ImageView mImageView;
 
     private DataManager mDataManager;
     private HouseDao mHouseDao;
