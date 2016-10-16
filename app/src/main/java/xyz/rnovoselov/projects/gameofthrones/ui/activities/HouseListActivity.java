@@ -1,17 +1,17 @@
 package xyz.rnovoselov.projects.gameofthrones.ui.activities;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -35,11 +34,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.rnovoselov.projects.gameofthrones.R;
-import xyz.rnovoselov.projects.gameofthrones.data.storage.models.House;
-import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
 import xyz.rnovoselov.projects.gameofthrones.ui.fragments.HouseFragment;
-import xyz.rnovoselov.projects.gameofthrones.utils.AppConfig;
-import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
+
+import static xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager.*;
 
 /**
  * Created by novoselov on 13.10.2016.
@@ -48,6 +45,7 @@ import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
 public class HouseListActivity extends BaseActivity {
 
     private static final String EXTRA_VIEW_PAGER_TAB = "EXTRA_VIEW_PAGER_TAB";
+    private static final String EXTRA_SYNC_ERROR = "EXTRA_SYNC_ERROR";
 
     @BindView(R.id.house_activity_coordinator)
     CoordinatorLayout mCoordinatorLayout;
@@ -79,6 +77,12 @@ public class HouseListActivity extends BaseActivity {
 
     private MenuItem mSearchItem;
 
+    public static Intent newIntent(Context context, SYNC_DATA_ERRORS error) {
+        Intent intent = new Intent(context, HouseListActivity.class);
+        intent.putExtra(EXTRA_SYNC_ERROR, error);
+        return intent;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -97,13 +101,22 @@ public class HouseListActivity extends BaseActivity {
 
         setupViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
-        setupTabIcon(ConstantManager.LANNISTER_HOUSE_TAB_ID);
-        setupTabIcon(ConstantManager.STARKS_HOUSE_TAB_ID);
-        setupTabIcon(ConstantManager.TARGARYENS_HOUSE_TAB_ID);
+        setupTabIcon(LANNISTER_HOUSE_TAB_ID);
+        setupTabIcon(STARKS_HOUSE_TAB_ID);
+        setupTabIcon(TARGARYENS_HOUSE_TAB_ID);
 
         if (savedInstanceState != null) {
             int currentVpTab = savedInstanceState.getInt(EXTRA_VIEW_PAGER_TAB, 0);
             mViewPager.setCurrentItem(currentVpTab);
+        } else {
+            try {
+                SYNC_DATA_ERRORS error = ((SYNC_DATA_ERRORS) getIntent().getSerializableExtra(EXTRA_SYNC_ERROR));
+                if (error != SYNC_DATA_ERRORS.NO_ERROR) {
+                    showSnackbar(error.toStringValue());
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -191,9 +204,9 @@ public class HouseListActivity extends BaseActivity {
 
     private void setupViewPager(ViewPager vp) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        lannisterFragment = HouseFragment.newInstance(AppConfig.LANNISTER_HOUSE_ID);
-        starksFragment = HouseFragment.newInstance(AppConfig.STARK_HOUSE_ID);
-        targariensFragment = HouseFragment.newInstance(AppConfig.TARGARYEN_HOUSE_ID);
+        lannisterFragment = HouseFragment.newInstance(LANNISTER_HOUSE_ID);
+        starksFragment = HouseFragment.newInstance(STARK_HOUSE_ID);
+        targariensFragment = HouseFragment.newInstance(TARGARYEN_HOUSE_ID);
         adapter.addFragment(lannisterFragment, getResources().getString(R.string.lannister_home_title));
         adapter.addFragment(starksFragment, getString(R.string.stark_home_title));
         adapter.addFragment(targariensFragment, getString(R.string.targariens_home_title));
@@ -261,5 +274,9 @@ public class HouseListActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    private void showSnackbar(String message) {
+        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
 }

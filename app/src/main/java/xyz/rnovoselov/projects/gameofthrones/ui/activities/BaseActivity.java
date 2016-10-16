@@ -1,13 +1,11 @@
 package xyz.rnovoselov.projects.gameofthrones.ui.activities;
 
-import android.app.ProgressDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import xyz.rnovoselov.projects.gameofthrones.R;
+import xyz.rnovoselov.projects.gameofthrones.ui.activities.dialogs.ProgressFragmentDialog;
 import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
 
 /**
@@ -17,24 +15,23 @@ import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
 public class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = ConstantManager.TAG_PREFIX + BaseActivity.class.getSimpleName();
-    protected ProgressDialog mProgressDialog;
+    private final static String DIALOG_PROGRESS = "DAILOG_PROGRESS";
+    protected ProgressFragmentDialog mProgressFragmentDialog;
 
-    public void showProgress () {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this, R.style.custom_dialog);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            mProgressDialog.show();
-            mProgressDialog.setContentView(R.layout.progress_splash);
-        } else {
-            mProgressDialog.show();
-            mProgressDialog.setContentView(R.layout.progress_splash);
+
+    public void showProgress() {
+
+        FragmentManager manager = getSupportFragmentManager();
+        if (mProgressFragmentDialog == null) {
+            mProgressFragmentDialog = new ProgressFragmentDialog();
+            mProgressFragmentDialog.setCancelable(false);
         }
+        mProgressFragmentDialog.show(manager, DIALOG_PROGRESS);
     }
 
-    public void hideProgress () {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
+    public void hideProgress() {
+        if (mProgressFragmentDialog != null && !mProgressFragmentDialog.isHidden()) {
+            mProgressFragmentDialog.dismiss();
         }
     }
 
@@ -46,4 +43,5 @@ public class BaseActivity extends AppCompatActivity {
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
 }

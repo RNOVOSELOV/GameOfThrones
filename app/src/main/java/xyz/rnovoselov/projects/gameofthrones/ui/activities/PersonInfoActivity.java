@@ -125,13 +125,13 @@ public class PersonInfoActivity extends BaseActivity {
         try {
             int headerDrawable = 0;
             switch (mPerson.getPersonHouseRemoteId().intValue()) {
-                case AppConfig.LANNISTER_HOUSE_ID:
+                case ConstantManager.LANNISTER_HOUSE_ID:
                     headerDrawable = R.drawable.person_lannister;
                     break;
-                case AppConfig.STARK_HOUSE_ID:
+                case ConstantManager.STARK_HOUSE_ID:
                     headerDrawable = R.drawable.person_stark;
                     break;
-                case AppConfig.TARGARYEN_HOUSE_ID:
+                case ConstantManager.TARGARYEN_HOUSE_ID:
                     headerDrawable = R.drawable.person_targarien;
                     break;
             }

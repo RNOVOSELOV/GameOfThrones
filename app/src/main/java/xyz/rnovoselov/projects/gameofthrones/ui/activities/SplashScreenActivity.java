@@ -1,6 +1,5 @@
 package xyz.rnovoselov.projects.gameofthrones.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -24,7 +23,6 @@ import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Person;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.PersonDao;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.Titles;
 import xyz.rnovoselov.projects.gameofthrones.data.storage.models.TitlesDao;
-import xyz.rnovoselov.projects.gameofthrones.utils.AppConfig;
 import xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager;
 import xyz.rnovoselov.projects.gameofthrones.utils.NetworkStatusChecker;
 
@@ -44,6 +42,8 @@ public class SplashScreenActivity extends BaseActivity {
     private volatile List<Titles> titles = new ArrayList<>();
     private volatile int sessionCounter;
 
+    private volatile ConstantManager.SYNC_DATA_ERRORS syncError;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +51,7 @@ public class SplashScreenActivity extends BaseActivity {
         mDataManager = DataManager.getInstance();
         ButterKnife.bind(this);
         sessionCounter = 0;
+        syncError = ConstantManager.SYNC_DATA_ERRORS.NO_ERROR;
 
         if (savedInstanceState != null) {
             //сохранять массивы на случай поворотов
@@ -65,10 +66,15 @@ public class SplashScreenActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         showProgress();
-        processHouse(AppConfig.STARK_HOUSE_ID);
-        processHouse(AppConfig.LANNISTER_HOUSE_ID);
-        processHouse(AppConfig.TARGARYEN_HOUSE_ID);
-        sessionCounter = sessionCounter + ConstantManager.USED_HOUSES_COUNT;
+        if (NetworkStatusChecker.isNetworkAvailable(this)) {
+            processHouse(ConstantManager.STARK_HOUSE_ID);
+            processHouse(ConstantManager.LANNISTER_HOUSE_ID);
+            processHouse(ConstantManager.TARGARYEN_HOUSE_ID);
+            sessionCounter = sessionCounter + ConstantManager.USED_HOUSES_COUNT;
+        } else {
+            syncError = ConstantManager.SYNC_DATA_ERRORS.NO_INTERNET_CONNECTION;
+            launchMainActivity();
+        }
     }
 
     @Override
@@ -86,36 +92,41 @@ public class SplashScreenActivity extends BaseActivity {
     }
 
     private void processHouse(final int id) {
-        if (NetworkStatusChecker.isNetworkAvailable(this)) {
-            Call<HouseModelRes> call = mDataManager.getHouse(String.valueOf(id));
-            call.enqueue(new Callback<HouseModelRes>() {
-                @Override
-                public void onResponse(Call<HouseModelRes> call, Response<HouseModelRes> response) {
-                    if (response.code() == 200) {
-                        houses.add(new House((long) id, response.body()));
+
+        Call<HouseModelRes> call = mDataManager.getHouse(String.valueOf(id));
+        call.enqueue(new Callback<HouseModelRes>() {
+            @Override
+            public void onResponse(Call<HouseModelRes> call, Response<HouseModelRes> response) {
+                if (response.code() == 200) {
+                    houses.add(new House((long) id, response.body()));
 //                        House house = new House((long) id, response.body());
 //                        mDataManager.getDaoSession().getHouseDao().insertOrReplace(house);
 
-                        List<String> housePersonUrls = response.body().getPersonsUrls();
-                        sessionCounter += housePersonUrls.size();
-                        for (String urlPerson : housePersonUrls) {
-                            processPersonUrl(id, urlPerson);
-                        }
-                    } else if (response.code() == 404) {
-                        showSnackbar("Дом не обнаружен");
-                    } else {
-                        showSnackbar("Ошибка получения информации о доме " + String.valueOf(id));
+                    List<String> housePersonUrls = response.body().getPersonsUrls();
+                    sessionCounter += housePersonUrls.size();
+                    for (String urlPerson : housePersonUrls) {
+                        processPersonUrl(id, urlPerson);
                     }
-                    launchMainActivity();
+                } else if (response.code() == 404) {
+                    if (ConstantManager.SYNC_DATA_ERRORS.INCORRECT_HOUSE.ordinal() > syncError.ordinal()) {
+                        syncError = ConstantManager.SYNC_DATA_ERRORS.INCORRECT_HOUSE;
+                    }
+                } else {
+                    if (ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED.ordinal() > syncError.ordinal()) {
+                        syncError = ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED;
+                    }
                 }
+                launchMainActivity();
+            }
 
-                @Override
-                public void onFailure(Call<HouseModelRes> call, Throwable t) {
-                    launchMainActivity();
-                    // TODO обработать ошибки
+            @Override
+            public void onFailure(Call<HouseModelRes> call, Throwable t) {
+                if (ConstantManager.SYNC_DATA_ERRORS.INCORRECT_HOUSE.ordinal() > syncError.ordinal()) {
+                    syncError = ConstantManager.SYNC_DATA_ERRORS.INCORRECT_HOUSE;
                 }
-            });
-        }
+                launchMainActivity();
+            }
+        });
     }
 
     private void processPersonUrl(final int houseId, String url) {
@@ -143,16 +154,22 @@ public class SplashScreenActivity extends BaseActivity {
 //                        mDataManager.getDaoSession().getTitlesDao().insertOrReplace(t);
                     }
                 } else if (response.code() == 404) {
-                    showSnackbar("Персонаж не обнаружен");
+                    if (ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED.ordinal() > syncError.ordinal()) {
+                        syncError = ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED;
+                    }
                 } else {
-                    showSnackbar("Ошибка получения информации о персонаже ");
+                    if (ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED.ordinal() > syncError.ordinal()) {
+                        syncError = ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED;
+                    }
                 }
                 launchMainActivity();
             }
 
             @Override
             public void onFailure(Call<PersonModelRes> call, Throwable t) {
-                showSnackbar("Ошибка получения информации о персонаже ");
+                if (ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED.ordinal() > syncError.ordinal()) {
+                    syncError = ConstantManager.SYNC_DATA_ERRORS.DATA_NOT_SINCHRONIZED;
+                }
                 launchMainActivity();
             }
         });
@@ -160,15 +177,18 @@ public class SplashScreenActivity extends BaseActivity {
 
     void launchMainActivity() {
         sessionCounter--;
-        if (sessionCounter != 0) {
+        if (sessionCounter > 0) {
             return;
         }
         mHouseDao.insertOrReplaceInTx(houses);
         mPersonDao.insertOrReplaceInTx(persons);
         mTitlesDao.insertOrReplaceInTx(titles);
+        startMainActivity();
+    }
+
+    private void startMainActivity() {
         hideProgress();
-        Intent intent = new Intent(this, HouseListActivity.class);
-        startActivity(intent);
+        startActivity(HouseListActivity.newIntent(this, syncError));
         ActivityCompat.finishAfterTransition(this);
     }
 }

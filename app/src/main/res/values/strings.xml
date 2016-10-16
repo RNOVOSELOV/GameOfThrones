@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Game of Thrones</string>
+    <string name="app_name">Game of Thrones: characters</string>
     <string name="lannister_home_title">LANNISTER</string>
     <string name="stark_home_title">STARK</string>
     <string name="targariens_home_title">TARGARYEN</string>
@@ -16,4 +16,7 @@
     <string name="menu_search_hint">Search character of the house</string>
     <string name="no_info">no info</string>
 
+    <string name="error_no_connection">No internet connection. The data may be irrelevant.</string>
+    <string name="error_house_is_absent">Server error. Information about some houses are not updated.</string>
+    <string name="error_some_data">Server error. The data may be irrelevant.</string>
 </resources>
