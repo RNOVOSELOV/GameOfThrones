@@ -2,6 +2,7 @@ package xyz.rnovoselov.projects.gameofthrones.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -35,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.rnovoselov.projects.gameofthrones.R;
 import xyz.rnovoselov.projects.gameofthrones.ui.fragments.HouseFragment;
+import xyz.rnovoselov.projects.gameofthrones.utils.AppUtils;
 
 import static xyz.rnovoselov.projects.gameofthrones.utils.ConstantManager.*;
 
@@ -132,6 +135,7 @@ public class HouseListActivity extends BaseActivity {
         mSearchItem = menu.findItem(R.id.menu_search_action);
         searchView = ((SearchView) MenuItemCompat.getActionView(mSearchItem));
         searchView.setQueryHint(getString(R.string.menu_search_hint));
+        AppUtils.changeSearchViewTextColor(searchView, Color.WHITE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

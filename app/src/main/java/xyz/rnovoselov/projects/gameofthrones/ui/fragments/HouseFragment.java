@@ -75,8 +75,11 @@ public class HouseFragment extends Fragment {
     }
 
     public void showPersons(final String name) {
-
-        mSearchHandler.removeCallbacks(searchRunnable);
+        try {
+            mSearchHandler.removeCallbacks(searchRunnable);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
         searchRunnable = new Runnable() {
             @Override
             public void run() {

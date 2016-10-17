@@ -104,6 +104,12 @@ public class PersonInfoActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ActivityCompat.finishAfterTransition(PersonInfoActivity.this);
+                }
+            });
         }
     }
 
