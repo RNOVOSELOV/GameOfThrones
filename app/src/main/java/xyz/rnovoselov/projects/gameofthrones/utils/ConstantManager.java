@@ -19,6 +19,10 @@ public interface ConstantManager {
     int STARK_HOUSE_ID = 362;
     int TARGARYEN_HOUSE_ID = 378;
 
+    String DB_PASSPHRASE = "GoT_Application";
+
+    String DB_LAST_UPDATED_TIME = "DB_LAST_UPDATED_TIME";
+
     enum SYNC_DATA_ERRORS {
         NO_ERROR {
             @Override

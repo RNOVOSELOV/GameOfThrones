@@ -1,6 +1,7 @@
 package xyz.rnovoselov.projects.gameofthrones.mvp.models;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -57,6 +58,11 @@ public class SplashModel {
      */
     public void startQueryQueue() {
         if (queueIsStarted) {
+            return;
+        }
+        long currTime = Calendar.getInstance().getTimeInMillis();
+        if (currTime - (24 * 60 * 60 * 1000) < mDataManager.getPreferenceManager().getLastDbUpdateTime()) {
+            SplashPresenter.getInstance().loadCompletedModelCallback(syncError);
             return;
         }
         queueIsStarted = true;
@@ -173,6 +179,9 @@ public class SplashModel {
         mHouseDao.insertOrReplaceInTx(houses);
         mPersonDao.insertOrReplaceInTx(persons);
         mTitlesDao.insertOrReplaceInTx(titles);
+        if (syncError == ConstantManager.SYNC_DATA_ERRORS.NO_ERROR){
+            mDataManager.getPreferenceManager().writeLastDbUpdateTime(Calendar.getInstance().getTimeInMillis());
+        }
         SplashPresenter.getInstance().loadCompletedModelCallback(syncError);
     }
 }

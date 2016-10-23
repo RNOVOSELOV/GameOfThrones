@@ -32,11 +32,13 @@ public class DataManager {
     private Context mContext;
     private RestService mRestService;
     private DaoSession mDaoSession;
+    private PreferenceManager mPreferenceManager;
 
     private DataManager() {
         mContext = GotApplication.getAppContext();
         mRestService = ServiceGenerator.createService(RestService.class);
         mDaoSession = GotApplication.getDaoSession();
+        mPreferenceManager = new PreferenceManager();
     }
 
     private static class DataMangerHolder {
@@ -53,6 +55,10 @@ public class DataManager {
 
     public Context getContext() {
         return mContext;
+    }
+
+    public PreferenceManager getPreferenceManager() {
+        return mPreferenceManager;
     }
 
     // region ========== API ==========
